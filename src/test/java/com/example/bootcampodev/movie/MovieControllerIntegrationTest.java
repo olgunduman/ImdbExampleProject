@@ -1,23 +1,31 @@
-package com.example.bootcampodev;
+package com.example.bootcampodev.movie;
 
+import com.example.bootcampodev.base.BaseIntegrationTest;
 import com.example.bootcampodev.dto.request.actor.ActorCreateRequest;
 import com.example.bootcampodev.dto.request.movie.MovieRequest;
 import com.example.bootcampodev.dto.response.movie.MovieCreateResponse;
+import com.example.bootcampodev.dto.response.movie.MovieResponse;
 import com.example.bootcampodev.entity.Genre;
 import com.example.bootcampodev.repository.actor.ActorJpaRepository;
 import com.example.bootcampodev.repository.matching.MatchingJpaRepository;
 import com.example.bootcampodev.repository.movie.MovieJpaRepository;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.ParameterizedTypeReference;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.test.context.jdbc.Sql;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.*;
-public class MovieControllerIntegrationTest extends BaseIntegrationTest{
+import static org.junit.jupiter.api.Assertions.assertEquals;
+
+public class MovieControllerIntegrationTest extends BaseIntegrationTest {
 
     @Autowired
     MovieJpaRepository movieJpaRepository;
@@ -84,8 +92,76 @@ public class MovieControllerIntegrationTest extends BaseIntegrationTest{
         var matchings = matchingJpaRepository.findAll();
         assertThat(matchings).hasSize(5);
 
+    }
+
+    @Test
+    @Sql(scripts = "/cleanup.sql",executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD)
+    @Sql(scripts = "/movie-create.sql",executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)
+    void should_delete_movie_test(){
+
+        //given
+        Long movieId = 1L;
+        var url = "/movie/delete/"+movieId;
+        //when
+        ResponseEntity<MovieResponse> response = testRestTemplate.postForEntity(url,movieId,MovieResponse.class);
+
+
+        //then
+        //assertThat(response.getStatusCode()).isEqualTo(HttpStatus.NO_CONTENT);
+        assertThat(response.getBody()).isNotNull();
+
+        //validate movie
+        var createdMovie = movieJpaRepository.findById(movieId);
+        assertThat(createdMovie.isPresent());
+        assertThat(createdMovie.get().getName()).isEqualTo("movie-name");
+        assertThat(createdMovie.get().getGenre()).isEqualTo(Genre.ACTION);
+        assertThat(createdMovie.get().getReleaseYear()).isEqualTo(2015);
+        assertThat(createdMovie.get().getDirector()).isEqualTo("movie-director");
+
+
+    }
+
+    @Test
+    @Sql(scripts = "/cleanup.sql",executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD)
+    @Sql(scripts = "/movie-create.sql",executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)
+    void should_movie_get_all(){
+
+        String url = "movie/getAll";
+        //given
+        //when
+        ResponseEntity<List<MovieResponse>> response = testRestTemplate.exchange("/movie/getAll", HttpMethod.GET, HttpEntity.EMPTY,
+                new ParameterizedTypeReference<List<MovieResponse>>() {
+                });
+        //then
+        assertThat(response.getBody()).isNotNull();
+        assertThat(response.getBody()).hasSize(2);
+
+
+
 
 
 
     }
+
+    @Test  @Sql(scripts = "/cleanup.sql",executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD)
+    @Sql(scripts = "/movie-create.sql",executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)
+    void should_retrieve_movie_test(){
+        //when
+        ResponseEntity<MovieResponse> response = testRestTemplate.getForEntity("/movie/1001",MovieResponse.class);
+
+        //then
+        assertThat(response.getBody()).isNotNull();
+        assertThat(response.getBody()).extracting("name","genre","releaseYear","director")
+                .containsExactly("movie-name 1001",Genre.ACTION,2015,"movie-director 1001");
+
+        assertThat(response.getBody().getActors())
+                .hasSize(2)
+                .extracting("id","name","birthDate")
+                .containsExactly(
+                        tuple(2001L,"test actor 2001",LocalDateTime.of(2001,1,12,11,0,0)),
+                        tuple(2003L,"test actor 2003",LocalDateTime.of(2003,1,12,13,0,0))
+                );
+    }
+
+
 }

@@ -3,11 +3,10 @@ package com.example.bootcampodev.controller;
 import com.example.bootcampodev.dto.request.movie.MovieRequest;
 import com.example.bootcampodev.dto.response.movie.MovieCreateResponse;
 import com.example.bootcampodev.dto.response.movie.MovieResponse;
-import com.example.bootcampodev.entity.MovieEntity;
 import com.example.bootcampodev.service.actor.Actor;
+import com.example.bootcampodev.service.actor.ActorService;
 import com.example.bootcampodev.service.movie.Movie;
 import com.example.bootcampodev.service.movie.MovieService;
-import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
@@ -18,8 +17,10 @@ import java.util.List;
 public class MovieController {
 
     private final MovieService movieService;
-    public MovieController(MovieService movieService) {
+    private final ActorService actorService;
+    public MovieController(MovieService movieService, ActorService actorService) {
         this.movieService = movieService;
+        this.actorService = actorService;
     }
 
     @PostMapping("/create")
@@ -44,10 +45,12 @@ public class MovieController {
     @GetMapping("/{id}")
     public MovieResponse retrieve(@PathVariable Long id){
         Movie movie = movieService.retrieve(id);
-        return MovieResponse.convertFrom(movie);
+        var actor = actorService.retrieveActors(id);
+        return MovieResponse.convertFrom(movie,actor);
     }
 
-    @DeleteMapping("/{id}")
+    @DeleteMapping("/delete/{id}")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
     public MovieResponse delete(@PathVariable Long id){
 
         var movie = movieService.deleteById(id);

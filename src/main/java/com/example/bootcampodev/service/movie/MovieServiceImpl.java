@@ -43,7 +43,7 @@ public class MovieServiceImpl implements MovieService {
         // movie actor eşleşmesi yapılacak matching tablosuna kayıt atılacak;
 
       Stream.of(createdActors, existingActors).flatMap(List::stream).forEach(actorEntity -> {
-          List<MatchingEntity> matchingEntities = Collections.singletonList(MatchingEntity.builder().actorEntity(actorEntity).movieEntity(createdMovie).build());
+          List<MatchingEntity> matchingEntities = Collections.singletonList(MatchingEntity.builder().actor(actorEntity).movie(createdMovie).build());
             mathcingDao.create(matchingEntities);
         });
 

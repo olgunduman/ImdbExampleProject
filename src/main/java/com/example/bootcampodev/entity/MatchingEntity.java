@@ -18,8 +18,8 @@ public class MatchingEntity {
     private Long id;
 
     @ManyToOne
-    private MovieEntity movieEntity;
+    private MovieEntity movie;
 
     @ManyToOne
-    private ActorEntity actorEntity;
+    private ActorEntity actor;
 }

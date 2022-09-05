@@ -25,4 +25,17 @@ public class Actor {
         actorEntity.setBirthDate(birthDate);
         return actorEntity;
     }
+
+    public static Actor convertFrom(ActorEntity actorEntity){
+        return Actor.builder()
+                .id(actorEntity.getId())
+                .name(actorEntity.getName())
+                .birthDate(actorEntity.getBirthDate())
+                .build();
+    }
+
+
+
+
+
 }

@@ -1,5 +1,6 @@
-package com.example.bootcampodev;
+package com.example.bootcampodev.actor;
 
+import com.example.bootcampodev.base.BaseIntegrationTest;
 import com.example.bootcampodev.dto.request.actor.ActorCreateRequest;
 import com.example.bootcampodev.dto.response.actor.ActorCreateResponse;
 import com.example.bootcampodev.entity.ActorEntity;
@@ -14,7 +15,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import java.time.LocalDateTime;
 import java.util.Optional;
 
-public class ActorControllerIntegrationTest extends BaseIntegrationTest{
+public class ActorControllerIntegrationTest extends BaseIntegrationTest {
 
     @Autowired
     private  ActorJpaRepository actorJpaRepository;

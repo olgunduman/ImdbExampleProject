@@ -1,4 +1,4 @@
-package com.example.bootcampodev;
+package com.example.bootcampodev.base;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
