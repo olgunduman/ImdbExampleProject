@@ -3,6 +3,7 @@ package com.example.bootcampodev.repository.movie;
 import com.example.bootcampodev.entity.ActorEntity;
 import com.example.bootcampodev.entity.MatchingEntity;
 import com.example.bootcampodev.entity.MovieEntity;
+import com.example.bootcampodev.entity.enums.Status;
 import com.example.bootcampodev.repository.actor.ActorJpaRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -61,5 +62,17 @@ public class MovieDaoImpl implements MovieDao {
 
         else
             throw new RuntimeException("actor ıd bulunamadı");
+    }
+
+    @Override
+    public void softDelete(Long id) {
+        Optional<MovieEntity> optionalMovieEntity = movieJpaRepository.findById(id);
+        if(optionalMovieEntity.isPresent())
+        {
+            MovieEntity movieEntity = optionalMovieEntity.get();
+            movieEntity.setStatus(Status.DELETED);
+            movieJpaRepository.save(movieEntity);
+        }
+
     }
 }

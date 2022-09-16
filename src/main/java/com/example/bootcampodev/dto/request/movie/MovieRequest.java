@@ -1,11 +1,9 @@
 package com.example.bootcampodev.dto.request.movie;
 
 import com.example.bootcampodev.dto.request.actor.ActorCreateRequest;
-import com.example.bootcampodev.entity.Genre;
-import com.example.bootcampodev.entity.MovieEntity;
+import com.example.bootcampodev.entity.enums.Genre;
 import com.example.bootcampodev.service.actor.Actor;
 import com.example.bootcampodev.service.movie.Movie;
-import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
 import org.springframework.util.CollectionUtils;

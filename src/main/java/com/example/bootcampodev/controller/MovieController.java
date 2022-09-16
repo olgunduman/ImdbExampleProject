@@ -52,9 +52,15 @@ public class MovieController {
     @DeleteMapping("/delete/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public MovieResponse delete(@PathVariable Long id){
-
         var movie = movieService.deleteById(id);
       return   MovieResponse.convertFrom(movie);
+    }
+
+    @DeleteMapping("/soft/delete/{id}")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void softDelete(@PathVariable Long id){
+        movieService.softDelete(id);
+
     }
 
 }

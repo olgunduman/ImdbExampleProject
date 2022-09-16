@@ -18,4 +18,6 @@ public interface MovieService {
 
 
     List<Movie> getAll();
+
+    void softDelete(Long id);
 }

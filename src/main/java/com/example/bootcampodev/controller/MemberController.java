@@ -13,7 +13,7 @@ import java.util.List;
 public class MemberController {
 
     private final MemberService memberService;
-        private int counter = 0;
+
     public MemberController(MemberService memberService) {
         this.memberService = memberService;
     }
@@ -25,11 +25,7 @@ public class MemberController {
     }
     @GetMapping("/{id}")
     public MemberResponse retrieve(@PathVariable Long id) throws InterruptedException {
-        if(counter == 3){
-            memberService.clearCache();
-            counter = 0;
-        }
-        counter++;
+
         Member member = memberService.retrieve(id);
        return MemberResponse.convertToMember(member);
     }

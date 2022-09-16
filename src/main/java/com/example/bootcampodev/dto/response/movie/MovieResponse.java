@@ -1,7 +1,7 @@
 package com.example.bootcampodev.dto.response.movie;
 
 import com.example.bootcampodev.dto.response.actor.ActorResponse;
-import com.example.bootcampodev.entity.Genre;
+import com.example.bootcampodev.entity.enums.Genre;
 import com.example.bootcampodev.service.actor.Actor;
 import com.example.bootcampodev.service.movie.Movie;
 import lombok.*;
@@ -14,8 +14,8 @@ import java.util.stream.Collectors;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-@EqualsAndHashCode
 public class MovieResponse {
+    private Long id;
     private String name;
     private Genre genre;
     private int releaseYear;
@@ -24,6 +24,7 @@ public class MovieResponse {
 
     public static MovieResponse convertFrom (Movie movie){
         return MovieResponse.builder()
+                .id(movie.getId())
                 .name(movie.getName())
                 .genre(movie.getGenre())
                 .releaseYear(movie.getReleaseYear())
@@ -39,6 +40,7 @@ public class MovieResponse {
 
     public static MovieResponse convertFrom(Movie entity, List<Actor> actor){
         return MovieResponse.builder()
+                .id(entity.getId())
                 .name(entity.getName())
                 .genre(entity.getGenre())
                 .releaseYear(entity.getReleaseYear())

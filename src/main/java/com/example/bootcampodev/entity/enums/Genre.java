@@ -1,4 +1,4 @@
-package com.example.bootcampodev.entity;
+package com.example.bootcampodev.entity.enums;
 
 public enum Genre {
     ACTION,
