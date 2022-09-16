@@ -17,4 +17,6 @@ public interface MovieDao {
     List<MovieEntity> findAll();
 
     List<MovieEntity> retrieveByActorId(Long actorId);
+
+    void softDelete(Long id);
 }

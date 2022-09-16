@@ -1,9 +1,15 @@
 package com.example.bootcampodev.entity;
 
+import com.example.bootcampodev.entity.enums.Genre;
+import com.example.bootcampodev.entity.enums.Status;
 import lombok.*;
+import org.hibernate.annotations.Where;
+import org.springframework.data.annotation.CreatedDate;
+import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Getter
@@ -13,11 +19,21 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
+//@Where(clause = "status = 'ACTIVE'")
+//@Where(clause = "status <> 'ACTIVE'")
+@Where(clause = "status <> 'DELETED'")
+@EntityListeners(AuditingEntityListener.class)
 public class MovieEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+
+    @Enumerated(EnumType.STRING)
+    private Status status = Status.ACTIVE;
+
+    @CreatedDate
+    private LocalDateTime createdDate;
 
     @NotNull
     private String name;

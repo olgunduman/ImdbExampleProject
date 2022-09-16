@@ -35,9 +35,7 @@ public class MemberServiceImpl implements MemberService {
 
 
     @Override
-   @Cacheable("mySpecialCache")
-    public Member retrieve(Long id) throws InterruptedException {
-        Thread.sleep(2000);
+    public Member retrieve(Long id){
       MemberEntity memberEntity = memberDao.retrieve(id);
     return   Member.convertToMemberEntity(memberEntity);
     }

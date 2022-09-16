@@ -1,11 +1,13 @@
 package com.example.bootcampodev.service.movie;
 
-import com.example.bootcampodev.entity.Genre;
+import com.example.bootcampodev.entity.enums.Genre;
 import com.example.bootcampodev.entity.MovieEntity;
-import lombok.Builder;
-import lombok.Getter;
+import lombok.*;
 
 @Getter
+@Setter
+@AllArgsConstructor
+@NoArgsConstructor
 @Builder
 public class Movie {
 

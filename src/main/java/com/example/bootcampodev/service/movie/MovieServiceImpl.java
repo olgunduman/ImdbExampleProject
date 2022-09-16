@@ -11,11 +11,14 @@ import com.example.bootcampodev.service.movie.Movie;
 import com.example.bootcampodev.repository.movie.MovieDao;
 import com.example.bootcampodev.service.movie.MovieService;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 
+import java.time.Duration;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -23,6 +26,7 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 @Service
+@Slf4j
 @RequiredArgsConstructor
 public class MovieServiceImpl implements MovieService {
 
@@ -30,7 +34,7 @@ public class MovieServiceImpl implements MovieService {
         private final ActorDao actorDao;
 
         private final MatchingDao mathcingDao;
-
+        private final RedisTemplate<String, Movie> movieRedisTemplate;
 
 
 
@@ -53,8 +57,16 @@ public class MovieServiceImpl implements MovieService {
 
     @Override
     public Movie retrieve(Long id) {
-        MovieEntity movieEntity = movieDao.retrieve(id);
-        return Movie.convertFrom(movieEntity);
+        Movie movie = movieRedisTemplate.opsForValue().get("movie :" + id);
+        log.info("Movie is retrieving" + id);
+        if(movie == null){
+            log.info("Movie cache is updating" + id);
+            MovieEntity entity =  movieDao.retrieve(id);
+            movie = Movie.convertFrom(entity);
+            movieRedisTemplate.opsForValue().set("movie : "+id, movie, Duration.ofHours(1));
+
+        }
+       return movie;
     }
 
     @Override
@@ -71,6 +83,11 @@ public class MovieServiceImpl implements MovieService {
         return movieDao.findAll().stream()
                 .map(Movie::convertFrom)
                 .collect(Collectors.toList());
+    }
+
+    @Override
+    public void softDelete(Long id) {
+        movieDao.softDelete(id);
     }
 
     private List<ActorEntity> createdActors(List<Actor> actors){

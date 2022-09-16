@@ -24,6 +24,6 @@ public class ActorEntity {
     @Column(nullable = false)
     private LocalDateTime birthDate;
 
-    @OneToMany(mappedBy = "actor")
+    @OneToMany(mappedBy = "actor",fetch = FetchType.EAGER)
     private List<MatchingEntity> matchings;
 }

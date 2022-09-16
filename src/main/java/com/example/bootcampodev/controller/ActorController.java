@@ -7,6 +7,7 @@ import com.example.bootcampodev.service.actor.ActorService;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -29,7 +30,7 @@ public class ActorController {
 
     }
 
-    @GetMapping("/{actorId}/movies")
+    @GetMapping(value = "/{actorId}/movies", consumes = MediaType.ALL_VALUE)
     public List<MovieResponse> retrieveMovie(@PathVariable Long actorId){
         return actorService.retrieveMovies(actorId)
                 .stream().map(MovieResponse::convertFrom)
