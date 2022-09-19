@@ -1,27 +1,20 @@
 package com.example.bootcampodev.actor;
 
 import com.example.bootcampodev.base.BaseIntegrationTest;
-import com.example.bootcampodev.dto.request.actor.ActorCreateRequest;
-import com.example.bootcampodev.dto.response.actor.ActorCreateResponse;
-import com.example.bootcampodev.dto.response.movie.MovieResponse;
-import com.example.bootcampodev.entity.ActorEntity;
-import com.example.bootcampodev.repository.actor.ActorJpaRepository;
-import com.example.bootcampodev.service.movie.Movie;
-import com.fasterxml.jackson.core.JsonProcessingException;
+import com.example.bootcampodev.adapter.rest.actor.ActorCreateRequest;
+import com.example.bootcampodev.adapter.rest.actor.ActorCreateResponse;
+import com.example.bootcampodev.adapter.rest.movie.MovieResponse;
+import com.example.bootcampodev.adapter.jpa.actor.ActorEntity;
+import com.example.bootcampodev.adapter.jpa.actor.ActorJpaRepository;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.core.ParameterizedTypeReference;
-import org.springframework.http.HttpEntity;
-import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.test.context.jdbc.Sql;
 
-import static org.assertj.core.api.Assertions.as;
 import static org.assertj.core.api.Assertions.assertThat;
 import java.time.LocalDateTime;
 import java.util.Arrays;
-import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
