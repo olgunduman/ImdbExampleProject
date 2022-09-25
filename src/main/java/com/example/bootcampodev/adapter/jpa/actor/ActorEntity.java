@@ -1,5 +1,6 @@
 package com.example.bootcampodev.adapter.jpa.actor;
 
+import com.example.bootcampodev.adapter.jpa.common.BaseEntity;
 import com.example.bootcampodev.adapter.jpa.matching.MatchingEntity;
 import com.example.bootcampodev.domain.actor.Actor;
 import lombok.Getter;
@@ -13,11 +14,9 @@ import java.util.List;
 @Setter
 @Table(name = "actor")
 @Entity(name = "actor")
-public class ActorEntity {
+public class ActorEntity extends BaseEntity {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+
 
     @Column(nullable = false)
     private String name;
@@ -30,9 +29,9 @@ public class ActorEntity {
 
     public static ActorEntity from(Actor actor) {
         ActorEntity actorEntity = new ActorEntity();
-        actorEntity.setId(actor.getId());
-        actorEntity.setName(actor.getName());
-        actorEntity.setBirthDate(actor.getBirthDate());
+        actorEntity.id = actor.getId();
+        actorEntity.name = actor.getName();
+        actorEntity.birthDate = actor.getBirthDate();
         return actorEntity;
     }
 

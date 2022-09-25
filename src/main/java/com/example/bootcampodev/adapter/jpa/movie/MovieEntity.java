@@ -1,5 +1,6 @@
 package com.example.bootcampodev.adapter.jpa.movie;
 
+import com.example.bootcampodev.adapter.jpa.common.BaseEntity;
 import com.example.bootcampodev.adapter.jpa.rate.RateEntity;
 import com.example.bootcampodev.adapter.jpa.enums.Genre;
 import com.example.bootcampodev.adapter.jpa.enums.Status;
@@ -24,18 +25,12 @@ import java.util.List;
 //@Where(clause = "status = 'ACTIVE'")
 //@Where(clause = "status <> 'ACTIVE'")
 @Where(clause = "status <> 'DELETED'")
-@EntityListeners(AuditingEntityListener.class)
-public class MovieEntity {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+public class MovieEntity extends BaseEntity {
+    
 
     @Enumerated(EnumType.STRING)
     private Status status = Status.ACTIVE;
-
-    @CreatedDate
-    private LocalDateTime createdDate;
 
     @NotNull
     private String name;
@@ -54,17 +49,17 @@ public class MovieEntity {
 
     public static MovieEntity from(Movie movie) {
         MovieEntity movieEntity = new MovieEntity();
-        movieEntity.setId(movie.getId());
-        movieEntity.setName(movie.getName());
-        movieEntity.setGenre(movie.getGenre());
-        movieEntity.setReleaseYear(movie.getReleaseYear());
-        movieEntity.setDirector(movie.getDirector());
+        movieEntity.id = movie.getId();
+        movieEntity.name = movie.getName();
+        movieEntity.genre = movie.getGenre();
+        movieEntity.releaseYear = movie.getReleaseYear();
+        movieEntity.director = movie.getDirector();
         return movieEntity;
     }
 
     public static MovieEntity fromMovieId(Long movieId) {
         MovieEntity movieEntity = new MovieEntity();
-        movieEntity.setId(movieId);
+        movieEntity.id = movieId;
         return movieEntity;
     }
 

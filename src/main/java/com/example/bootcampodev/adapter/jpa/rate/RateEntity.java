@@ -1,5 +1,6 @@
 package com.example.bootcampodev.adapter.jpa.rate;
 
+import com.example.bootcampodev.adapter.jpa.common.BaseEntity;
 import com.example.bootcampodev.adapter.jpa.member.MemberEntity;
 import com.example.bootcampodev.adapter.jpa.movie.MovieEntity;
 import com.example.bootcampodev.domain.rate.Rate;
@@ -21,16 +22,8 @@ import java.time.LocalDateTime;
 @Table(name = "rate")
 @Entity(name = "rateEntity")
 @EntityListeners(AuditingEntityListener.class)
-public class RateEntity {
+public class RateEntity extends BaseEntity {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
-
-    @Column(nullable = false)
-
-    @CreatedDate
-    private LocalDateTime createdDate;
 
     @ManyToOne
     @JoinColumn(nullable = false)
@@ -47,12 +40,13 @@ public class RateEntity {
 
 
     public static RateEntity from(Rate rate) {
-        return RateEntity.builder()
-                .id(rate.getId())
-                .point(rate.getPoint())
-                .member(MemberEntity.fromMemberId(rate.getMemberId()))
-                .movie(MovieEntity.fromMovieId(rate.getMovieId()))
-                .build();
+        RateEntity rateEntity = new RateEntity();
+        rateEntity.id = rate.getId();
+        rateEntity.point = rate.getPoint();
+        rateEntity.member = MemberEntity.fromMemberId(rate.getMemberId());
+        rateEntity.movie = MovieEntity.fromMovieId(rate.getMovieId());
+        return rateEntity;
+
 
     }
 

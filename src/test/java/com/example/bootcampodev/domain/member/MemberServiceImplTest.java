@@ -5,14 +5,19 @@ import com.example.bootcampodev.domain.port.MemberPersistencePort;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.junit.runner.RunWith;
 import org.mockito.Mock;
+import org.mockito.junit.MockitoJUnitRunner;
 import org.mockito.junit.jupiter.MockitoExtension;
+
+import java.util.List;
 
 import static org.assertj.core.api.AssertionsForInterfaceTypes.assertThat;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
+@RunWith(MockitoJUnitRunner.Silent.class)
 class MemberServiceImplTest {
 
     MemberServiceImpl memberService;
@@ -63,6 +68,32 @@ class MemberServiceImplTest {
         //then
         assertThat(id).isEqualTo(1L);
         assertThat(member.getFullName()).isEqualTo("olgun duman");
+
+    }
+
+    @Test
+    void should_member_getAll(){
+        //given
+        Member member1 = Member.builder()
+                .id(1L)
+                .fullName("olgun duman")
+                .build();
+        Member member2 = Member.builder()
+                .id(2L)
+                .fullName("onur duman")
+                .build();
+
+        when(memberPersistencePort.findAll()).thenReturn(List.of(member1,member2));
+
+
+
+        //when
+        List<Member> members = memberService.getAll();
+
+        assertThat(members.size()).isEqualTo(2);
+        assertThat(members.get(0).getFullName()).isEqualTo("olgun duman");
+
+
 
     }
 

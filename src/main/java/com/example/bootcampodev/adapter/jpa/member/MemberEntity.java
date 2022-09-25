@@ -1,5 +1,6 @@
 package com.example.bootcampodev.adapter.jpa.member;
 
+import com.example.bootcampodev.adapter.jpa.common.BaseEntity;
 import com.example.bootcampodev.adapter.jpa.rate.RateEntity;
 import com.example.bootcampodev.adapter.jpa.watch.WatchListEntity;
 import com.example.bootcampodev.domain.member.Member;
@@ -15,11 +16,9 @@ import java.util.List;
 @NoArgsConstructor
 @Entity(name = "member")
 @Table(name = "member")
-public class MemberEntity {
+public class MemberEntity extends BaseEntity {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+
 
     @Column(nullable = false)
     private String fullName;
@@ -38,15 +37,15 @@ public class MemberEntity {
 
     public static MemberEntity from(Member member) {
     MemberEntity memberEntity = new MemberEntity();
-        memberEntity.setFullName(member.getFullName());
-        memberEntity.setBirthYear(member.getBirthYear());
-        memberEntity.setPhone(member.getPhone());
+        memberEntity.fullName = member.getFullName();
+        memberEntity.birthYear = member.getBirthYear();
+        memberEntity.phone = member.getPhone();
         return memberEntity;
     }
 
     public static MemberEntity fromMemberId(Long memberId) {
         MemberEntity memberEntity = new MemberEntity();
-        memberEntity.setId(memberId);
+        memberEntity.id = memberId;
         return memberEntity;
     }
 

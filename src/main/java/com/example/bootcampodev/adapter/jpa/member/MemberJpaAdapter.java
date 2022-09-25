@@ -1,6 +1,8 @@
 package com.example.bootcampodev.adapter.jpa.member;
 
 import com.example.bootcampodev.adapter.rest.member.MemberRequest;
+import com.example.bootcampodev.domain.exception.DataNotFoundException;
+import com.example.bootcampodev.domain.exception.ExceptionType;
 import com.example.bootcampodev.domain.member.Member;
 import com.example.bootcampodev.domain.port.MemberPersistencePort;
 import org.springframework.stereotype.Service;
@@ -27,7 +29,7 @@ public class MemberJpaAdapter implements MemberPersistencePort {
 
     @Override
     public Member retrieve(Long id) {
-        MemberEntity retrieveMember = memberJpaRepository.findById(id).orElseThrow(() -> new NotFoundException("Member Id bulunamadı"));
+        MemberEntity retrieveMember = memberJpaRepository.findById(id).orElseThrow(() -> new DataNotFoundException(ExceptionType.MEMBER_NOT_FOUND_EXCEPTION, "member id : " + id));
         return retrieveMember.toModel();
     }
 

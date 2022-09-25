@@ -1,6 +1,8 @@
 package com.example.bootcampodev.domain.movie;
 
 import com.example.bootcampodev.domain.actor.Actor;
+import com.example.bootcampodev.domain.exception.ExceptionType;
+import com.example.bootcampodev.domain.exception.MyProjectValidationException;
 import com.example.bootcampodev.domain.port.ActorPersistencePort;
 import com.example.bootcampodev.domain.port.MatchigPersestincePort;
 import com.example.bootcampodev.domain.port.MoviePersistencePort;
@@ -71,6 +73,7 @@ public class MovieServiceImpl {
     }
 
     public void softDelete(Long id) {
+
         moviePersistencePort.softDelete(id);
     }
 
@@ -88,7 +91,9 @@ public class MovieServiceImpl {
            List<Actor> retrievedActors =  actorPersistencePort.retrieve(actorIds);
 
             if(retrievedActors.size() < actorIds.size()){
-                throw new RuntimeException("verilen actor id db de bulunamadı");
+               String detail = "Verilen actor id db' de bulunamamıştır. Beklenen : " + actorIds +  "Bulunan :" + retrievedActors;
+                throw new MyProjectValidationException(ExceptionType.COLLECTION_SIZE_EXCEPTION,detail );
+                // todo unit test for exception
             }
             return retrievedActors;
         }

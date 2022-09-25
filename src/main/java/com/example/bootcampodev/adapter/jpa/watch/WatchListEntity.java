@@ -1,5 +1,6 @@
 package com.example.bootcampodev.adapter.jpa.watch;
 
+import com.example.bootcampodev.adapter.jpa.common.BaseEntity;
 import com.example.bootcampodev.adapter.jpa.member.MemberEntity;
 import com.example.bootcampodev.adapter.jpa.movieWatch.MovieWatchListEntity;
 import com.example.bootcampodev.domain.watch.WatchList;
@@ -15,11 +16,9 @@ import java.util.List;
 @NoArgsConstructor
 @Entity
 @Table(name = "watchList")
-public class WatchListEntity {
+public class WatchListEntity extends BaseEntity {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+
 
     private String name;
 
@@ -30,11 +29,19 @@ public class WatchListEntity {
     private List<MovieWatchListEntity> movieWatchListEntity;
 
     public static WatchListEntity from(WatchList watchList) {
-        return WatchListEntity.builder()
-                .id(watchList.getId())
-                .name(watchList.getName())
-                .member(MemberEntity.fromMemberId(watchList.getMemberId()))
-                .build();
+         WatchListEntity watchListEntity = new WatchListEntity();
+         watchListEntity.id = watchList.getId();
+            watchListEntity.name = watchList.getName();
+            watchListEntity.member = MemberEntity.fromMemberId(watchList.getMemberId());
+
+            return watchListEntity;
+
+    }
+
+    public static WatchListEntity fromWatchListId(Long watchListId) {
+        WatchListEntity watchListEntity = new WatchListEntity();
+        watchListEntity.id = watchListId;
+        return watchListEntity;
     }
 
     public WatchList toModel() {

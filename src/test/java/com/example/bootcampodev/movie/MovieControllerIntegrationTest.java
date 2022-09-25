@@ -1,6 +1,7 @@
 package com.example.bootcampodev.movie;
 
 import com.example.bootcampodev.adapter.redis.MovieCache;
+import com.example.bootcampodev.adapter.rest.common.ExceptionResponse;
 import com.example.bootcampodev.base.BaseIntegrationTest;
 import com.example.bootcampodev.adapter.rest.actor.ActorCreateRequest;
 import com.example.bootcampodev.adapter.rest.movie.MovieRequest;
@@ -164,12 +165,27 @@ public class MovieControllerIntegrationTest extends BaseIntegrationTest {
                 );
 
         //validate-cache
-        // var movie = movieRedisTemplate.opsForValue().get("patika:movie: " + 1001);
-        // assertThat(movie).isNotNull();
-        // assertThat(movie.getName()).isEqualTo("test film 1001");
+        var movie = movieRedisTemplate.opsForValue().get("patika:movie: " + 1001);
+         assertThat(movie).isNotNull();
+         assertThat(movie.getName()).isEqualTo("movie-name 1001");
 
 
     }
+
+    @Test
+    void should_NOT_retrieve_movie_test() {
+        //when
+        ResponseEntity<ExceptionResponse> response = testRestTemplate.getForEntity("/movie/99", ExceptionResponse.class);
+
+        //then
+        assertThat(response.getBody()).isNotNull();
+        assertThat(response.getBody()).extracting("code", "message", "detail")
+                .containsExactly(1001,"film bulunamadı","movie id :99");
+
+
+
+    }
+
 
     @Test
     @Sql(scripts = "/cleanup.sql", executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD)

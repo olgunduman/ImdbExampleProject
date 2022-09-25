@@ -4,6 +4,8 @@ import com.example.bootcampodev.adapter.jpa.actor.ActorEntity;
 import com.example.bootcampodev.adapter.jpa.matching.MatchingEntity;
 import com.example.bootcampodev.adapter.jpa.enums.Status;
 import com.example.bootcampodev.adapter.jpa.actor.ActorJpaRepository;
+import com.example.bootcampodev.domain.exception.DataNotFoundException;
+import com.example.bootcampodev.domain.exception.ExceptionType;
 import com.example.bootcampodev.domain.movie.Movie;
 import com.example.bootcampodev.domain.port.MoviePersistencePort;
 import lombok.RequiredArgsConstructor;
@@ -34,14 +36,14 @@ public class MovieJpaAdapter implements MoviePersistencePort {
 
         Optional<MovieEntity> movieEntity = movieJpaRepository.findById(movieId);
         if (!movieEntity.isPresent())
-            throw new NotFoundException("Movie Id bulunamadı");
+            throw new DataNotFoundException(ExceptionType.MOVIE_NOT_FOUND_EXCEPTION,"movie id :" + movieId);
 
         return movieEntity.get().toModel();
     }
 
     @Override
     public Movie deleteById(Long id) {
-        var movie = movieJpaRepository.findById(id).orElseThrow(() -> new NotFoundException("Movie Id Bulunamadı"));
+        var movie = movieJpaRepository.findById(id).orElseThrow(() -> new DataNotFoundException(ExceptionType.MOVIE_NOT_FOUND_EXCEPTION));
         movieJpaRepository.delete(movie);
         return movie.toModel();
     }
@@ -64,7 +66,7 @@ public class MovieJpaAdapter implements MoviePersistencePort {
                     .map(MovieEntity::toModel)
                     .collect(Collectors.toList());
         else
-            throw new RuntimeException("actor ıd bulunamadı");
+            throw new DataNotFoundException(ExceptionType.ACTOR_NOT_FOUND_EXCEPTION, "actor id :" + actorId);
     }
 
     @Override

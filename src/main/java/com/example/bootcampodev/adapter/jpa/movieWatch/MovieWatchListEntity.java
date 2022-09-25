@@ -1,5 +1,6 @@
 package com.example.bootcampodev.adapter.jpa.movieWatch;
 
+import com.example.bootcampodev.adapter.jpa.common.BaseEntity;
 import com.example.bootcampodev.adapter.jpa.movie.MovieEntity;
 import com.example.bootcampodev.adapter.jpa.watch.WatchListEntity;
 import com.example.bootcampodev.domain.movieWatch.MovieWatchList;
@@ -15,11 +16,9 @@ import javax.persistence.*;
 @Entity
 @Table(name = "movieWatchList")
 
-public class MovieWatchListEntity {
+public class MovieWatchListEntity extends BaseEntity {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+
 
     @ManyToOne
     private MovieEntity movie;
@@ -28,11 +27,13 @@ public class MovieWatchListEntity {
     private WatchListEntity watchList;
 
     public static MovieWatchListEntity from(MovieWatchList movieWatchList) {
-        return MovieWatchListEntity.builder()
-                .id(movieWatchList.getId())
-                .movie(MovieEntity.builder().id(movieWatchList.getMovieId()).build())
-                .watchList(WatchListEntity.builder().id(movieWatchList.getWatchListId()).build())
-                .build();
+
+        MovieWatchListEntity movieWatchListEntity = new MovieWatchListEntity();
+        movieWatchListEntity.id = movieWatchList.getId();
+        movieWatchListEntity.movie = MovieEntity.fromMovieId(movieWatchList.getMovieId());
+        movieWatchListEntity.watchList = WatchListEntity.fromWatchListId(movieWatchList.getWatchListId());
+        return movieWatchListEntity;
+
     }
 
     public MovieWatchList toModel() {

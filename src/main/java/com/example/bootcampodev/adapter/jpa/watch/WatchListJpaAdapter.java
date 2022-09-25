@@ -1,5 +1,7 @@
 package com.example.bootcampodev.adapter.jpa.watch;
 
+import com.example.bootcampodev.domain.exception.DataNotFoundException;
+import com.example.bootcampodev.domain.exception.ExceptionType;
 import com.example.bootcampodev.domain.port.WatchListPersistencePort;
 import com.example.bootcampodev.domain.watch.WatchList;
 import org.springframework.stereotype.Service;
@@ -26,7 +28,7 @@ public class WatchListJpaAdapter implements WatchListPersistencePort {
     @Override
     public WatchList retrieve(Long id) {
 
-        WatchListEntity retrieveWatchList = watchListJpaRepository.findById(id).orElseThrow(() -> new NotFoundException("Id bulunamadı"));
+        WatchListEntity retrieveWatchList = watchListJpaRepository.findById(id).orElseThrow(() -> new DataNotFoundException(ExceptionType.WATCH_LIST_NOT_FOUND_EXCEPTION));
         return retrieveWatchList.toModel();
     }
 
