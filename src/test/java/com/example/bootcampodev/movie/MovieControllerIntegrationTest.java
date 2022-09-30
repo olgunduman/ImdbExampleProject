@@ -1,18 +1,21 @@
 package com.example.bootcampodev.movie;
 
+import com.example.bootcampodev.adapter.redis.MovieCache;
+import com.example.bootcampodev.adapter.rest.common.ExceptionResponse;
 import com.example.bootcampodev.base.BaseIntegrationTest;
-import com.example.bootcampodev.dto.request.actor.ActorCreateRequest;
-import com.example.bootcampodev.dto.request.movie.MovieRequest;
-import com.example.bootcampodev.dto.response.movie.MovieCreateResponse;
-import com.example.bootcampodev.dto.response.movie.MovieResponse;
-import com.example.bootcampodev.entity.MovieEntity;
-import com.example.bootcampodev.entity.enums.Genre;
-import com.example.bootcampodev.repository.actor.ActorJpaRepository;
-import com.example.bootcampodev.repository.matching.MatchingJpaRepository;
-import com.example.bootcampodev.repository.movie.MovieJpaRepository;
+import com.example.bootcampodev.adapter.rest.actor.ActorCreateRequest;
+import com.example.bootcampodev.adapter.rest.movie.MovieRequest;
+import com.example.bootcampodev.adapter.rest.movie.MovieCreateResponse;
+import com.example.bootcampodev.adapter.rest.movie.MovieResponse;
+import com.example.bootcampodev.adapter.jpa.movie.MovieEntity;
+import com.example.bootcampodev.adapter.jpa.enums.Genre;
+import com.example.bootcampodev.adapter.jpa.actor.ActorJpaRepository;
+import com.example.bootcampodev.adapter.jpa.matching.MatchingJpaRepository;
+import com.example.bootcampodev.adapter.jpa.movie.MovieJpaRepository;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.ParameterizedTypeReference;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
@@ -36,6 +39,9 @@ public class MovieControllerIntegrationTest extends BaseIntegrationTest {
 
     @Autowired
     MatchingJpaRepository matchingJpaRepository;
+
+    @Autowired
+    RedisTemplate<String, MovieCache> movieRedisTemplate;
 
     @Test
     @Sql(scripts = "/actor-create.sql", executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)
@@ -157,7 +163,29 @@ public class MovieControllerIntegrationTest extends BaseIntegrationTest {
                         tuple(2001L, "test actor 2001", LocalDateTime.of(2001, 1, 12, 11, 0, 0)),
                         tuple(2003L, "test actor 2003", LocalDateTime.of(2003, 1, 12, 13, 0, 0))
                 );
+
+        //validate-cache
+        var movie = movieRedisTemplate.opsForValue().get("patika:movie: " + 1001);
+         assertThat(movie).isNotNull();
+         assertThat(movie.getName()).isEqualTo("movie-name 1001");
+
+
     }
+
+    @Test
+    void should_NOT_retrieve_movie_test() {
+        //when
+        ResponseEntity<ExceptionResponse> response = testRestTemplate.getForEntity("/movie/99", ExceptionResponse.class);
+
+        //then
+        assertThat(response.getBody()).isNotNull();
+        assertThat(response.getBody()).extracting("code", "message", "detail")
+                .containsExactly(1001,"film bulunamadı","movie id :99");
+
+
+
+    }
+
 
     @Test
     @Sql(scripts = "/cleanup.sql", executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD)
