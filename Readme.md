@@ -1,6 +1,7 @@
 ### Technologies used in the project
 * Java 
 * Spring Boot
+*Spring Security
 * docker
 * PostgreSql
 * JUnit
